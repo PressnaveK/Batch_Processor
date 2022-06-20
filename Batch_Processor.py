@@ -20,14 +20,14 @@ while logic:
 logic = True
 while logic:
     try:
-        numSample = int(input("\nNum of Sample >>> "))
-        if numSample > 0:logic = False
+        numSample , numStart , imgName = str(input("\nNo_Sample,Starts_with,Img_Name _,_,_ >>> ")).strip().split(',')
+        if int(numSample) > 0 and int(numStart) >= 0:logic = False
         else:print("<ERROR> Not be negative or zero")
     except:
         print("<ERROR> Invalid input")
 
 
-for i in range(1,numSample+1):
+for i in range(int(numStart),int(numSample)+1):
     dirName = f"Level-{i}"
     if os.path.exists(dirName):
         shutil.rmtree("./"+dirName,ignore_errors=True)
@@ -55,21 +55,21 @@ while logic:
 print("\n Process getting started...")
 
 startFrame = int(start)*fps
-endFrame = startFrame if startFrame != 0 else  0
+startFrame = startFrame if startFrame != 0 else  0
 
 endFrame = int(end)*fps
-endFrame = endFrame if endFrame != 0 else  totalFrame
+endFrame = endFrame if endFrame != 0 else  totalFrame-1
 
-val = (endFrame - startFrame) / numSample
+val = (endFrame - startFrame) / int(numSample)
 frameCount = 0
-while frameCount <= endFrame:
+while frameCount <= endFrame :
     ret,frame = cap.read()
     if frameCount >= startFrame:
         err = 0.5 - (1/val)
         count = frameCount - startFrame 
         print(f"\r Extracting.....{count-1} / {endFrame - startFrame -1} images",end = "\r")
-        dircount = round((count /val) + err)
-        output = f"Level-{dircount}/Img-{count-1}.jpg"
+        dircount = round((count /val) + err) + int(numStart) -1
+        output = f"Level-{dircount}/{imgName}-{count-1}.jpg"
         resized_img = cv2.resize(frame,(int(width),int(height)))
         cv2.imwrite(output,resized_img)
 
